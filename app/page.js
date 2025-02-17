@@ -1,15 +1,61 @@
 "use client";
+import axios from "axios";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 export default function Home() {
   const [formData, setFormData] = useState({ title: "", description: "" });
+
+  const onChangeHandler = (e) => {
+    setFormData((formData) => ({ ...formData, [e.target.name]: e.target.value }));
+  };
+
+  const hanldeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // api call
+
+      const response = await axios.post("/api", formData);
+
+      const notify = () => toast.success(response.data.message);
+      notify();
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
   return (
     <>
-      <form className="flex flex-col space-y-4 w-[80%] max-w-[600px] mx-auto">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      <form className="flex flex-col space-y-4 w-[80%] max-w-[600px] mx-auto" onSubmit={hanldeSubmit} method="POST">
         <div>
-          <input type="text" name="title" className="border border-gray-300 py-2 px-3 focus:outline-none w-full" placeholder="Enter Title" />
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            className="border border-gray-300 py-2 px-3 focus:outline-none w-full"
+            placeholder="Enter Title"
+            onChange={onChangeHandler}
+          />
         </div>
         <div>
-          <input type="text" name="description" className="border border-gray-300 py-3 px-3 focus:outline-none w-full" placeholder="Enter description" />
+          <input
+            type="text"
+            name="description"
+            value={formData.description}
+            className="border border-gray-300 py-3 px-3 focus:outline-none w-full"
+            placeholder="Enter description"
+            onChange={onChangeHandler}
+          />
         </div>
         <div>
           <button type="submit" className="bg-orange-600 py-3 px-11 text-white">
